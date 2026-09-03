@@ -9,6 +9,13 @@ glm::vec2 CohesionRule::computeForce(const std::vector<BoidView>& neighborhood, 
 
   // begin solution
 
+  for (BoidView otherBoid : neighborhood) {
+    glm::vec2 difference = otherBoid.position - boid.position;
+    glm::vec2 direction = glm::normalize(difference);
+    float distance = glm::length(difference);
+
+    cohesionForce += direction * distance;
+  }
 
   // end solution
 
