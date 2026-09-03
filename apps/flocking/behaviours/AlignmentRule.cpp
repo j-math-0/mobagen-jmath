@@ -9,9 +9,8 @@ glm::vec2 AlignmentRule::computeForce(const std::vector<BoidView>& neighborhood,
   if (neighborhood.size() > 0) {
     glm::vec2 alignment(0.f);
 
-    for (BoidView otherBoid : neighborhood) {
+    for (BoidView otherBoid : neighborhood)
       alignment += otherBoid.velocity;
-    }
 
     averageVelocity = alignment / static_cast<float>(neighborhood.size());
   }
