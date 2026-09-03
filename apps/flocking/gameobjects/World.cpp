@@ -119,7 +119,7 @@ void FlockingManager::Update(float deltaTime) {
   if (ImGui::IsKeyDown(ImGuiKey_LeftArrow)) inputArrow.x -= 1.f;
   if (ImGui::IsKeyDown(ImGuiKey_RightArrow)) inputArrow.x += 1.f;
   if (glm::length(inputArrow) > 0.f) {
-    ecs_.get<BoidAcc>(boidEntities[0]).acc += inputArrow * 20.f;
+    ecs_.get<BoidAcc>(boidEntities[0]).acc += inputArrow * 1000.f;
     ecs_.get<BoidDebug>(boidEntities[0]).drawDebugRadius = true;
     ecs_.get<BoidDebug>(boidEntities[0]).color = Color::Red;
   }

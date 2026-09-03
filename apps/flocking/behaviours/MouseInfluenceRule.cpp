@@ -15,9 +15,10 @@ glm::vec2 MouseInfluenceRule::computeForce(const std::vector<BoidView>& neighbor
 
     glm::vec2 difference = glm::vec2(mousePos.x, mousePos.y) - boid.position;
     glm::vec2 direction = glm::normalize(difference);
-    float length = glm::length(difference);
+    float distance = glm::length(difference);
     
-    force = direction * (isRepulsive ? -length : length);
+    if (distance > 0.0001f) 
+        force = direction * (isRepulsive ? -distance : distance);
   }
   // end solution
 
