@@ -6,7 +6,7 @@ glm::vec2 AlignmentRule::computeForce(const std::vector<BoidView>& neighborhood,
   // glm::vec2 can be divided by a float, which will divide each component of the vector by that float.
 
   // begin solution
-  if (neighborhood.size() > 0) {
+  if (!neighborhood.empty()) {
     glm::vec2 alignment(0.f);
 
     for (BoidView otherBoid : neighborhood)
