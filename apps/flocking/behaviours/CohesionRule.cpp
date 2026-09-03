@@ -19,7 +19,9 @@ glm::vec2 CohesionRule::computeForce(const std::vector<BoidView>& neighborhood, 
 
     centerOfMass /= size;
     
-    cohesionForce = centerOfMass - boid.position;
+    glm::vec2 difference = centerOfMass - boid.position;
+
+    cohesionForce = glm::normalize(difference) * glm::length(difference);
   }
 
   // end solution
