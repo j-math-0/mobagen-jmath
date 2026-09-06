@@ -5,15 +5,18 @@ glm::vec2 CohesionRule::computeForce(const std::vector<BoidView>& neighborhood, 
   if (!neighborhood.empty()) {
     glm::vec2 centerOfMass(0.f);
 
-    for (BoidView otherBoid : neighborhood) centerOfMass += otherBoid.position;
+    for (BoidView otherBoid : neighborhood) 
+        centerOfMass += otherBoid.position;
 
     // Average the center of mass
     centerOfMass /= neighborhood.size();
 
     glm::vec2 difference = centerOfMass - boid.position;
+    float distance = glm::length(difference);
 
-    return glm::normalize(difference) * glm::length(difference);
+    if (distance > 0.0001f) 
+        return glm::normalize(difference) * distance;
   }
 
-  return glm::vec2(0.0f, 0.0f);
+  return glm::vec2(0.f);
 }
