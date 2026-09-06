@@ -8,7 +8,7 @@ glm::vec2 AlignmentRule::computeForce(const std::vector<BoidView>& neighborhood,
     for (BoidView otherBoid : neighborhood)
       alignment += otherBoid.velocity;
 
-    // Average the alignment
+    // Average the alignment force
     return alignment /= neighborhood.size();
   }
 

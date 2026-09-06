@@ -10,6 +10,7 @@ glm::vec2 SeparationRule::computeForce(const std::vector<BoidView>& neighborhood
     glm::vec2 direction = glm::normalize(difference);
     float distance = glm::length(difference);
     
+    // Epsilon check. Ensure the magnitude of the difference isn't a really small number
     if (distance > 0.0001f) 
         separatingForce += direction * (desiredMinimalDistance / distance);
   }

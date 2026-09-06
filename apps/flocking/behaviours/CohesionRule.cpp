@@ -14,6 +14,7 @@ glm::vec2 CohesionRule::computeForce(const std::vector<BoidView>& neighborhood, 
     glm::vec2 difference = centerOfMass - boid.position;
     float distance = glm::length(difference);
 
+    // Epsilon check. Ensure the magnitude of the difference isn't a really small number
     if (distance > 0.0001f) 
         return glm::normalize(difference) * distance;
   }

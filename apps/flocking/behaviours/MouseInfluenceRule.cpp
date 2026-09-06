@@ -9,8 +9,12 @@ glm::vec2 MouseInfluenceRule::computeForce(const std::vector<BoidView>& neighbor
     glm::vec2 direction = glm::normalize(difference);
     float distance = glm::length(difference);
     
-    if (distance > 0.0001f) 
-        return direction * (isRepulsive ? -distance : distance);
+    // Epsilon check. Ensure the magnitude of the difference isn't a really small number
+    if (distance > 0.0001f)
+    {
+      // The direction is flipped if the isRepulsive setting is enabled
+      return (isRepulsive ? -direction : direction) * distance;
+    }
   }
 
   return glm::vec2(0.f);
