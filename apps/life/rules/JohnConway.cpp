@@ -132,8 +132,18 @@ int JohnConway::CountNeighbors(World& world, Point2D point) {
   //   a square cell has 8 neighbors, one per dx/dy in {-1, 0, 1}, excluding itself
   //   world.Get({point.x + dx, point.y + dy}) wraps around the borders (toroidal)
   // begin solution
+  int count = 0;
+  
+  for (int dy = -1; dy <= 1; dy++) {
+    for (int dx = -1; dx <= 1; dx++) {
+      Point2D otherPoint{point.x + dx, point.y + dy}; 
+      if (world.Get(otherPoint) && otherPoint != point) 
+        count++;
+    }
+  }
 
-  throw std::logic_error("CountNeighbors not implemented yet");
+  //throw std::logic_error("CountNeighbors not implemented yet");
 
+  return count;
   // end solution
 }
