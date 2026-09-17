@@ -24,7 +24,9 @@ void RecursiveBacktrackerExample::Clear(World* world) {
   //   clear visited and the path stack, then start the walk at the
   //   top-left cell in formal units: stack.push_back({0, 0})
   // begin solution
-
+  visited.clear();
+  stack.clear();
+  stack.push_back({0, 0});
   // end solution
 }
 
@@ -49,9 +51,34 @@ bool RecursiveBacktrackerExample::Step(World* w) {
   //     LEFT  -> w->SetWest(worldCurrent, false)
   //   return true while there is still work (stack not empty after the move)
   // begin solution
+  if (stack.empty()) 
+      return false;
+
+  Point2D current = stack.back();
+  std::vector<Point2D> visitables = getVisitables(w, current);
+
+  visited[current.x][current.y] = true;
+
+  if (visitables.empty())
+  {
+    stack.pop_back();
+    return !stack.empty();
+  }
+  else if (visitables.size() == 1)
+    current = visitables.front();
+  else if (visitables.size() >= 2)
+    current = visitables[SeededRandom::next() % visitables.size()];
+
+  Point2D worldCurrent = w->ToWorldCoords(current);
+  w->SetNorth(worldCurrent, false);
+  w->SetEast(worldCurrent, false);
+  w->SetSouth(worldCurrent, false);
+  w->SetWest(worldCurrent, false);
+
+  stack.push_back(current);
 
   // end solution
-  return false;
+  return true;
 }
 
 std::vector<Point2D> RecursiveBacktrackerExample::getVisitables(World* w, const Point2D& formalPoint) {
@@ -61,7 +88,20 @@ std::vector<Point2D> RecursiveBacktrackerExample::getVisitables(World* w, const 
   //   keep a candidate only if it is inside the grid
   //   (0 <= x < w->GetWidth(), 0 <= y < w->GetHeight()) and not visited
   // begin solution
-
+  std::vector<Point2D> visitables;
+  std::vector<Point2D> directions{
+      {0, -1}, // UP
+      {1, 0},  // RIGHT
+      {0, 1},  // DOWN
+      {-1, 0}  // LEFT
+  };
+ 
+  for (const Point2D& direction : directions) {
+    int x = formalPoint.x + direction.x, y = formalPoint.y + direction.y;
+    if (0 <= x && x < w->GetWidth() && 0 <= y && y < w->GetHeight() && !visited[x][y]) {
+      visitables.push_back({x, y});
+    }
+  }
   // end solution
-  return {};
+  return visitables;
 }
