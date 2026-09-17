@@ -20,7 +20,7 @@ public:
     // This a simple random number generator, we will use more robust random number generation later.
     uint8_t output = randomNumbers[index];
 
-    index = (index + 1) % 99;
+    index = (index + 1) % 100;
 
     return output;
   }
