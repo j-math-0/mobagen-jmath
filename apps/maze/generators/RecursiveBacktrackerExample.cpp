@@ -3,6 +3,9 @@
 #include "RecursiveBacktrackerExample.h"
 #include <climits>
 
+const Color32 STEP(1.0, 0.0, 0.0), COMPLETE(0.0, 0.0, 0.0);
+const Point2D UP{0, 1}, DOWN{0, -1}, LEFT{-1, 0}, RIGHT{1, 0};
+
 // Recursive backtracker, in FORMAL units: (0, 0) is the top-left cell, x grows
 // right, y grows down. The caller seeds SeededRandom before the first Step;
 // every decision consumes the seed in order, so the maze is deterministic.
@@ -55,30 +58,42 @@ bool RecursiveBacktrackerExample::Step(World* w) {
       return false;
 
   Point2D current = stack.back();
-  std::vector<Point2D> visitables = getVisitables(w, current);
-
+  
   visited[current.x][current.y] = true;
+
+  std::vector<Point2D> visitables = getVisitables(w, current);
 
   if (visitables.empty())
   {
     stack.pop_back();
+    w->SetNodeColor(w->ToWorldCoords(current), COMPLETE);
     return !stack.empty();
   }
-  else if (visitables.size() == 1)
-    current = visitables.front();
+
+  Point2D visitable;
+
+  if (visitables.size() == 1)
+    visitable = visitables.front();
   else if (visitables.size() >= 2)
-    current = visitables[SeededRandom::next() % visitables.size()];
-
+    visitable = visitables[SeededRandom::next() % visitables.size()];
+  
   Point2D worldCurrent = w->ToWorldCoords(current);
-  w->SetNorth(worldCurrent, false);
-  w->SetEast(worldCurrent, false);
-  w->SetSouth(worldCurrent, false);
-  w->SetWest(worldCurrent, false);
 
-  stack.push_back(current);
+  if (visitable == UP)
+    w->SetSouth(worldCurrent, false);
+  else if (visitable == RIGHT)
+    w->SetEast(worldCurrent, false);
+  else if (visitable == DOWN)
+    w->SetNorth(worldCurrent, false);
+  else if (visitable == LEFT)
+    w->SetWest(worldCurrent, false);
 
-  // end solution
+  stack.push_back(current + visitable);
+
+  w->SetNodeColor(w->ToWorldCoords(current), STEP);
+
   return true;
+  // end solution
 }
 
 std::vector<Point2D> RecursiveBacktrackerExample::getVisitables(World* w, const Point2D& formalPoint) {
@@ -89,17 +104,12 @@ std::vector<Point2D> RecursiveBacktrackerExample::getVisitables(World* w, const 
   //   (0 <= x < w->GetWidth(), 0 <= y < w->GetHeight()) and not visited
   // begin solution
   std::vector<Point2D> visitables;
-  std::vector<Point2D> directions{
-      {0, -1}, // UP
-      {1, 0},  // RIGHT
-      {0, 1},  // DOWN
-      {-1, 0}  // LEFT
-  };
+  std::vector<Point2D> directions{UP, RIGHT, DOWN, LEFT};
  
   for (const Point2D& direction : directions) {
     int x = formalPoint.x + direction.x, y = formalPoint.y + direction.y;
     if (0 <= x && x < w->GetWidth() && 0 <= y && y < w->GetHeight() && !visited[x][y]) {
-      visitables.push_back({x, y});
+      visitables.push_back(direction);
     }
   }
   // end solution
