@@ -4,7 +4,7 @@
 #include <climits>
 
 const Color32 STEP(1.0, 0.0, 0.0), COMPLETE(0.0, 0.0, 0.0);
-const Point2D UP{0, 1}, DOWN{0, -1}, LEFT{-1, 0}, RIGHT{1, 0};
+const Point2D UP{0, -1}, DOWN{0, 1}, LEFT{-1, 0}, RIGHT{1, 0};
 
 // Recursive backtracker, in FORMAL units: (0, 0) is the top-left cell, x grows
 // right, y grows down. The caller seeds SeededRandom before the first Step;
@@ -80,11 +80,11 @@ bool RecursiveBacktrackerExample::Step(World* w) {
   Point2D worldCurrent = w->ToWorldCoords(current);
 
   if (visitable == UP)
-    w->SetSouth(worldCurrent, false);
+    w->SetNorth(worldCurrent, false);
   else if (visitable == RIGHT)
     w->SetEast(worldCurrent, false);
   else if (visitable == DOWN)
-    w->SetNorth(worldCurrent, false);
+    w->SetSouth(worldCurrent, false);
   else if (visitable == LEFT)
     w->SetWest(worldCurrent, false);
 
