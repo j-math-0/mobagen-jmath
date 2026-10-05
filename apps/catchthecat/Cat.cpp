@@ -5,6 +5,7 @@
 Point2D Cat::Move(CatWorld* world) {
   auto rand = Random::Range(0, 5);
   auto pos = world->getCat();
+  
   switch (rand) {
     case 0:
       return CatWorld::NE(pos);

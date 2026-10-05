@@ -6,6 +6,7 @@ Point2D Catcher::Move(CatWorld* world) {
   for (;;) {
     Point2D p = {Random::Range(-side, side), Random::Range(-side, side)};
     auto cat = world->getCat();
-    if (cat.x != p.x && cat.y != p.y && !world->getContent(p)) return p;
+    if (cat.x != p.x || cat.y != p.y && !world->getContent(p)) 
+        return p;
   }
 }

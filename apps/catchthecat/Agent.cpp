@@ -20,6 +20,20 @@ std::vector<Point2D> Agent::generatePath(CatWorld* w) {
   Point2D borderExit = {INT32_MAX, INT32_MAX};  // sentinel: no border found yet
 
   while (!frontier.empty()) {
+    Point2D current = frontier.front();
+    frontierSet.erase(current);
+    visited[current] = true;
+
+    for (Point2D neighbor : w->neighbors(current)) 
+    {
+      if (!visited.at(neighbor)) 
+      {
+        frontier.push(neighbor);
+        frontierSet.insert(neighbor);
+        cameFrom[neighbor] = current;
+        break;
+      }
+    }
     // get the current from frontier
     // remove the current from frontierset
     // mark current as visited
