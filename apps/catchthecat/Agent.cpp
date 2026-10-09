@@ -7,45 +7,62 @@
 
 using namespace std;
 
-std::vector<Point2D> Agent::generatePath(CatWorld* w) {
+const Point2D BORDER_SENTINAL(INT32_MAX, INT32_MAX);
+
+int Agent::heuristic(const CatWorld* w, const Point2D& p) 
+{ 
+    const int sideSize = w->getWorldSideSize() / 2;
+    return min(sideSize - abs(p.x), sideSize - abs(p.y));
+}
+
+std::vector<Point2D> Agent::generatePath(CatWorld* w) 
+{
+  unordered_map<Point2D, bool> visited;  // use .at() to get data, if the element dont exist [] will give you wrong results
   unordered_map<Point2D, Point2D> cameFrom;  // to build the flowfield and build the path
-  queue<Point2D> frontier;                   // to store next ones to visit
-  unordered_set<Point2D> frontierSet;        // OPTIMIZATION to check faster if a point is in the queue
-  unordered_map<Point2D, bool> visited;      // use .at() to get data, if the element dont exist [] will give you wrong results
+  priority_queue<pair<int, Point2D>, vector<pair<int, Point2D>>, greater<pair<int, Point2D>>> frontier;  // to store next ones to visit
 
-  // bootstrap state
-  auto catPos = w->getCat();
-  frontier.push(catPos);
-  frontierSet.insert(catPos);
-  Point2D borderExit = {INT32_MAX, INT32_MAX};  // sentinel: no border found yet
+  const Point2D catPos = w->getCat();
+  Point2D borderExit = BORDER_SENTINAL;  // sentinel: no border found yet
+  frontier.emplace(heuristic(w, catPos), catPos);
 
-  while (!frontier.empty()) {
-    Point2D current = frontier.front();
-    frontierSet.erase(current);
-    visited[current] = true;
+  while (!frontier.empty()) 
+  {
+    const pair<int, Point2D> currentPair = frontier.top();
+    const Point2D currentPoint = currentPair.second;
+    frontier.pop();
 
-    for (Point2D neighbor : w->neighbors(current)) 
+    if (visited.at(currentPoint)) 
+        continue;
+    else if (w->catWinsOnSpace(currentPoint))
     {
-      if (!visited.at(neighbor)) 
-      {
-        frontier.push(neighbor);
-        frontierSet.insert(neighbor);
-        cameFrom[neighbor] = current;
+        borderExit = currentPoint;
         break;
-      }
     }
-    // get the current from frontier
-    // remove the current from frontierset
-    // mark current as visited
-    // getVisitableNeightbors(world, current) returns a vector of neighbors that are not visited, not cat, not block, not in the queue
-    // iterate over the neighs:
-    // for every neighbor set the cameFrom
-    // enqueue the neighbors to frontier and frontierset
-    // do this up to find a visitable border and break the loop
+
+    visited[currentPoint] = true;
+
+    for (Point2D neighbor : w->neighbors(currentPoint)) 
+    {
+      if (visited.at(neighbor) || !w->isValidPosition(neighbor)) 
+          continue;
+
+      cameFrom[neighbor] = currentPoint;
+      frontier.emplace(heuristic(w, neighbor), neighbor);
+    }
   }
 
-  // if the border is not infinity, build the path from border to the cat using the camefrom map
-  // if there isnt a reachable border, just return empty vector
-  // if your vector is filled from the border to the cat, the first element is the catcher move, and the last element is the cat move
-  return vector<Point2D>();
+  vector<Point2D> path;
+
+  if (borderExit != BORDER_SENTINAL) 
+  {
+    Point2D current = borderExit;
+
+    while (current != catPos) 
+    {
+      path.push_back(current);
+      current = cameFrom.at(current);
+    }
+  }
+
+  return path;
 }

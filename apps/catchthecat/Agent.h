@@ -5,6 +5,15 @@
 #include <functional>
 #include <vector>
 
+namespace glm {
+  inline bool operator<(const glm::ivec2& a, const glm::ivec2& b) 
+  {
+    if (a.x != b.x) 
+        return a.x < b.x;
+    return a.y < b.y;
+  }
+}
+
 // Point2D is now glm::ivec2 — same x,y interface, no OOP wrapper needed.
 using Point2D = glm::ivec2;
 
@@ -29,6 +38,7 @@ public:
   virtual Point2D Move(CatWorld*) = 0;
 
   std::vector<Point2D> generatePath(CatWorld* w);
+  int heuristic(const CatWorld* w, const Point2D& p);
 };
 
 #endif  // AGENT_H
