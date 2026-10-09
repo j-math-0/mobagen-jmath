@@ -38,7 +38,7 @@ public:
   virtual Point2D Move(CatWorld*) = 0;
 
   std::vector<Point2D> generatePath(CatWorld* w);
-  int heuristic(const CatWorld* w, const Point2D& p);
+  static int heuristic(const CatWorld* w, const Point2D& p);
 };
 
 #endif  // AGENT_H
